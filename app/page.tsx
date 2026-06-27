@@ -1,3 +1,5 @@
+import { askLLM } from "./action";
+
 export default function Home() {
   return (
     <main className="min-h-screen p-5 flex flex-col items-center justify-center">
@@ -9,6 +11,9 @@ export default function Home() {
           자연어로 입력하는 AI 지출 관리 서비스
         </p>
         <div className="bg-slate-900/50 p-3 rounded-xl border border-slate-600/80 mb-4">
+          <form action={askLLM(formData)}>
+            <input name="amount"></input>
+          </form>
           <p className="text-sm text-text-muted">테스트 입력기</p>
           <p className="text-sm italic mt-1">
             "오늘 카페에서 아메리카노 5000원 씀"

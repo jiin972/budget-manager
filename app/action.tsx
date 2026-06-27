@@ -4,6 +4,25 @@ import { z } from "zod";
 import db from "../lib/db";
 import { revalidatePath } from "next/cache";
 
+//LLM API fetcher
+export async function askLLM(formData: FormData) {
+  const prompt = formData.get("prompt") as string;
+  const response = await fetch("http://100.109.28.107:11434/api/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "gemma4:e4b",
+      prompt: prompt,
+      stream: false,
+    }),
+  });
+  const data = await response.json();
+  return { result: data.response };
+}
+
+// 입력값 검증담당
 export async function checkInputData(formData: FormData) {
   const expenseSchema = z.object({
     amount: z.coerce.number().min(1),
@@ -20,6 +39,7 @@ export async function checkInputData(formData: FormData) {
   return result;
 }
 
+//db 생성
 export async function addExpense(formData: FormData) {
   const result = await checkInputData(formData);
   if (!result.success) {
@@ -29,7 +49,7 @@ export async function addExpense(formData: FormData) {
   }
   const { amount, category, description } = result.data;
 
-  const expenseData = await db.expense.create({
+  await db.expense.create({
     data: {
       amount,
       category,
