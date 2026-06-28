@@ -1,25 +1,44 @@
 "use server";
 
-import { z } from "zod";
+import { success, z } from "zod";
 import db from "../lib/db";
 import { revalidatePath } from "next/cache";
 
 //LLM API fetcher
-export async function askLLM(formData: FormData) {
+//인자를 추가로 받으려면 formData앞에 배치해야 함
+export async function getOllmaData(prevState: any, formData: FormData) {
   const prompt = formData.get("prompt") as string;
-  const response = await fetch("http://100.109.28.107:11434/api/generate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "gemma4:e4b",
-      prompt: prompt,
-      stream: false,
-    }),
-  });
-  const data = await response.json();
-  return { result: data.response };
+  const systemInstruction = `
+    너는 가계부 기록 봇이야. 유저가 지출 내역을 입력하면, 서론과 마무리는 절대 하지 말고 오직 아래의 JSON 포맷으로만 딱 한 줄로 답변해.
+
+    [포맷]
+    {"category": "카테고리", "amount": 금액, "content": "내역"}
+
+    [예시]
+    유저: 마트에서 고기 삼만원
+    답변: {"category": "식비", "amount": 30000, "content": "마트 고기"}
+    `;
+  try {
+    const response = await fetch("http://100.109.28.107:11434/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gemma4:e4b",
+        prompt: `${systemInstruction}\n\n 유저입력 ${prompt}`, //input으로 받은 값
+        stream: false,
+        options: { keep_alive: -1 },
+      }),
+    });
+    const data = await response.json();
+    //ollama가 보낸 텍스트 구조, 객체 파싱
+    const parseResult = JSON.parse(data.response.trim());
+
+    return { success: true, result: data.response, data: parseResult };
+  } catch (e) {
+    return { success: false, e: "AI 분석 실패" };
+  }
 }
 
 // 입력값 검증담당

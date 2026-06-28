@@ -1,4 +1,4 @@
-import { askLLM } from "./action";
+import AmountForm from "@/components/amout_form";
 
 export default function Home() {
   return (
@@ -11,17 +11,8 @@ export default function Home() {
           자연어로 입력하는 AI 지출 관리 서비스
         </p>
         <div className="bg-slate-900/50 p-3 rounded-xl border border-slate-600/80 mb-4">
-          <form action={askLLM(formData)}>
-            <input name="amount"></input>
-          </form>
-          <p className="text-sm text-text-muted">테스트 입력기</p>
-          <p className="text-sm italic mt-1">
-            "오늘 카페에서 아메리카노 5000원 씀"
-          </p>
+          <AmountForm />
         </div>
-        <button className="w-full bg-primary rounded-xl hover:bg-emerald-600 text-bg-dark font-semibold py-2 px-4 transition-colors ">
-          시작하기
-        </button>
       </div>
     </main>
   );
