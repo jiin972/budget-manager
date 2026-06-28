@@ -1,5 +1,5 @@
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
-import { PrismaClient } from "@prisma/client/extension";
+import { PrismaClient } from "../app/generated/prisma";
 import Database from "better-sqlite3";
 
 const sqlite = new Database("./database.db");
