@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  next-app:
+    build: .
+    container_name: next_dev_server
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - WATCHPACK_POLLING=true # 💡 리눅스/컨테이너 환경에서 파일 변경 감지를 위한 옵션
