@@ -11,4 +11,4 @@ COPY . .
 #NextJS 개발서버 개방
 EXPOSE 3000
 
-CMD [ "npm","run dev" ]
+CMD [ "npm", "run", "dev" ]
