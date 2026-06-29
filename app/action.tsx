@@ -9,7 +9,7 @@ import { revalidatePath } from "next/cache";
 
 const ollamaUrl = process.env.OLLAMA_API_URL;
 
-export async function getOllmaData(prevState: any, formData: FormData) {
+export async function getOllamaData(prevState: any, formData: FormData) {
   const prompt = formData.get("prompt") as string;
 
   const systemInstruction = `
