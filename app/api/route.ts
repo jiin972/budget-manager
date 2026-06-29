@@ -1,8 +1,10 @@
+const ollamaUrl = process.env.OLLAMA_API_URL;
+
 export default async function POST(request: Request) {
   try {
     const { prompt } = await request.json();
 
-    const response = await fetch("http://100.109.28.107:11434/api/generate", {
+    const response = await fetch(`${ollamaUrl}/api/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
