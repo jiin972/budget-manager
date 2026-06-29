@@ -1,13 +1,17 @@
 "use server";
 
-import { success, z } from "zod";
+import { z } from "zod";
 import db from "../lib/db";
 import { revalidatePath } from "next/cache";
 
 //LLM API fetcher
 //인자를 추가로 받으려면 formData앞에 배치해야 함
+
+const ollamaUrl = process.env.OLLAMA_API_URL;
+
 export async function getOllmaData(prevState: any, formData: FormData) {
   const prompt = formData.get("prompt") as string;
+
   const systemInstruction = `
     너는 가계부 기록 봇이야. 유저가 지출 내역을 입력하면, 서론과 마무리는 절대 하지 말고 오직 아래의 JSON 포맷으로만 딱 한 줄로 답변해.
 
@@ -17,9 +21,16 @@ export async function getOllmaData(prevState: any, formData: FormData) {
     [예시]
     유저: 마트에서 고기 삼만원
     답변: {"category": "식비", "amount": 30000, "content": "마트 고기"}
+
+    [절대 규칙]
+    1. "밥먹었어", "안녕"처럼 금액(숫자)이나 명확한 지출 행위가 없는 문장이 들어오면, 위의 포맷을 절대 만들지 마.
+    2. 금액이나 지출 내역을 추정할 수 없다면, 무조건 아래의 에러 JSON 포맷 딱 하나만 반환해. 다른 말은 절대 하지 마.
+    {
+      "error": "금액이나 명확한 지출 내역을 찾을 수 없습니다."
+    }
     `;
   try {
-    const response = await fetch("http://100.109.28.107:11434/api/generate", {
+    const response = await fetch(`${ollamaUrl}/api/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -51,7 +62,7 @@ export async function checkInputData(formData: FormData) {
   const data = {
     amount: formData.get("amount"),
     category: formData.get("category"),
-    description: formData.get("description"),
+    description: formData.get("content"),
   };
   const result = expenseSchema.safeParse(data);
 
