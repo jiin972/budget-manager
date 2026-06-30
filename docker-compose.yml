@@ -16,3 +16,4 @@ services:
       - .env.local
     environment:
       - WATCHPACK_POLLING=true # 💡 리눅스/컨테이너 환경에서 파일 변경 감지를 위한 옵션
+      - HOST=0.0.0.0
