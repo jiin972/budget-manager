@@ -70,12 +70,12 @@ export async function checkInputData(formData: FormData) {
 }
 
 //db 생성
-export async function addExpense(formData: FormData) {
+export async function addExpense(prevState: any, formData: FormData) {
   const result = await checkInputData(formData);
   if (!result.success) {
     const flatten = z.flattenError(result.error);
     console.log("검증실패", flatten.fieldErrors);
-    return;
+    return { success: false, errors: flatten.fieldErrors };
   }
   const { amount, category, description } = result.data;
 
@@ -88,5 +88,7 @@ export async function addExpense(formData: FormData) {
   });
   // DB변경  화면 새로 고침
   // data리턴 보다 revalidatePath가 적절함
+  console.log("DB저장완료:", { amount, category, description });
   revalidatePath("/");
+  return { success: true };
 }
