@@ -103,9 +103,9 @@ export default function AmountForm() {
                   className="w-full text-sm p-4 py-2 border border-text-muted rounded-xl"
                 />
               </div>
-              {state?.errors?.description && (
+              {state?.errors?.content && (
                 <p className="text-red-400 text-xs">
-                  {state.errors.description[0]}
+                  {state.errors.content[0]}
                 </p>
               )}
             </form>

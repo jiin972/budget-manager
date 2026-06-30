@@ -57,12 +57,12 @@ export async function checkInputData(formData: FormData) {
   const expenseSchema = z.object({
     amount: z.coerce.number().min(1),
     category: z.string().min(1, "사용처를 입력 해야 합니다.."),
-    description: z.string().min(1, "사용내역을 입력 해야 합니다."),
+    content: z.string().min(1, "사용내역을 입력 해야 합니다."),
   });
   const data = {
     amount: formData.get("amount"),
     category: formData.get("category"),
-    description: formData.get("content"),
+    content: formData.get("content"),
   };
   const result = expenseSchema.safeParse(data);
 
@@ -77,18 +77,18 @@ export async function addExpense(prevState: any, formData: FormData) {
     console.log("검증실패", flatten.fieldErrors);
     return { success: false, errors: flatten.fieldErrors };
   }
-  const { amount, category, description } = result.data;
+  const { amount, category, content } = result.data;
 
   await db.expense.create({
     data: {
       amount,
       category,
-      description,
+      content,
     },
   });
   // DB변경  화면 새로 고침
   // data리턴 보다 revalidatePath가 적절함
-  console.log("DB저장완료:", { amount, category, description });
+  console.log("DB저장완료:", { amount, category, content });
   revalidatePath("/");
   return { success: true };
 }
