@@ -1,7 +1,7 @@
 "use client";
 
 import { addExpense, getOllamaData } from "@/app/action";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 
 export default function AmountForm() {
   const [state, formaction, isSaving] = useActionState(addExpense, null);
@@ -25,8 +25,21 @@ export default function AmountForm() {
     setIsPending(false);
   };
 
+  const formkey = state?.success ? "reset-form-success" : "static-key";
+
+  useEffect(() => {
+    if (state?.success) {
+      setTimeout(() => {
+        setAmount("");
+        setCategory("");
+        setContent("");
+        setConfirm(false);
+      }, 0);
+    }
+  }, [state]);
+
   return (
-    <>
+    <div key={formkey}>
       <form
         onSubmit={(e) => {
           e.preventDefault(); //화면새로고침막음
@@ -121,6 +134,6 @@ export default function AmountForm() {
           </div>
         )
       )}
-    </>
+    </div>
   );
 }
