@@ -9,6 +9,7 @@ export default function AmountForm() {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [content, setContent] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   //상태 제어용 변수
   const [isPending, setIsPending] = useState(false);
   const [confirm, setConfirm] = useState(false);
@@ -20,6 +21,10 @@ export default function AmountForm() {
       setAmount(result.data.amount + "");
       setCategory(result.data.category);
       setContent(result.data.content);
+      //Ai 반환 date형태 가공
+      const rawDate = result.data.createdAt || "";
+      const formattedDate = rawDate.replace(/\./g, "-").trim();
+      setDate(formattedDate);
       setConfirm(true);
     }
     setIsPending(false);
@@ -47,7 +52,7 @@ export default function AmountForm() {
         }}
       >
         <input
-          className="w-full text-sm text-text-muted py-3"
+          className="w-full text-sm text-text-muted py-3 p-2"
           name="prompt"
           placeholder="사용내역을 입력해 주세요"
         />
@@ -71,6 +76,23 @@ export default function AmountForm() {
               id="budget-form"
               className="flex flex-col gap-5 text-white"
             >
+              <div className="flex gap-4 w-full items-center">
+                <span className="w-16 shrink-0 text-center text-sm">
+                  사용일
+                </span>
+                <input
+                  name="createdAt"
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="w-full text-sm p-4 py-2 border border-text-muted rounded-xl"
+                />
+                {state?.errors?.createdAt && (
+                  <p className="text-red-400 text-xs">
+                    {state.errors.createdAt[0]}
+                  </p>
+                )}
+              </div>
               <div className="flex gap-4 w-full items-center">
                 <span className="w-16 shrink-0 text-center text-sm">
                   지출액
