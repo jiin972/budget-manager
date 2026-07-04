@@ -1,5 +1,9 @@
 import AmountForm from "@/components/amout_form";
-
+import { Metadata } from "next";
+import Link from "next/link";
+export const metadata: Metadata = {
+  title: "Home",
+};
 export default function Home() {
   return (
     <main className="min-h-screen p-5 flex flex-col items-center justify-center">
@@ -14,6 +18,12 @@ export default function Home() {
           <AmountForm />
         </div>
       </div>
+      <Link
+        href="/weekly"
+        className="mt-5 p-2 px-4 rounded-xl shadow-md bg-text-muted bottom-5"
+      >
+        주간지출내역
+      </Link>
     </main>
   );
 }
