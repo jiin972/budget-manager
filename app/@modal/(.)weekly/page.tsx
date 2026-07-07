@@ -3,6 +3,8 @@ import { getWeekly } from "./action";
 export default async function WeeklyModal() {
   const days = await getWeekly();
   if (!days) return "데이터가 없습니다.";
+
+  const totalAmonut = days.reduce((acc, day) => acc + day.amount, 0);
   return (
     <div className="fixed bg-card-dark inset-0 z-50 p-5 flex flex-col justify-center items-center">
       <div className="bg-slate-900 p-6 rounded-2xl max-w-md w-full shadow-2xl">
@@ -30,6 +32,7 @@ export default async function WeeklyModal() {
               <div className="text-right font-semibold text-primary">{`${day.amount.toLocaleString()}원`}</div>
             </div>
           ))}
+          <div>{`${totalAmonut.toLocaleString()} 원`}</div>
         </div>
       </div>
     </div>
