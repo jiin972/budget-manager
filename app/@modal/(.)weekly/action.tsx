@@ -44,6 +44,4 @@ export async function getWeekly() {
     console.log("에러발생:", e);
     return []; // 없을 경우 빈 배열 반환
   }
-
-  return null;
 }
