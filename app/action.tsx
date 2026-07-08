@@ -42,12 +42,13 @@ export async function getOllamaData(prevState: any, formData: FormData) {
         options: { keep_alive: -1 },
       }),
     });
+    if (!response.ok) throw new Error("Ollama서버 응답 실패"); //서버에러캐치
     const data = await response.json();
     //ollama가 보낸 텍스트 구조, 객체 파싱
     const parseResult = JSON.parse(data.response.trim());
-
     return { success: true, result: data.response, data: parseResult };
   } catch (e) {
+    console.log("Ai분석실패", e);
     return { success: false, e: "AI 분석 실패" };
   }
 }
