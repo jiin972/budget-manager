@@ -1,0 +1,48 @@
+export default function CreateAccount() {
+  return (
+    <div className="flex flex-col gap-10 py-8 px-6 ">
+      <div className="flex flex-col gap-2 *:font-medium">
+        <h1 className="text-2xl">안녕하세요!</h1>
+        <h2 className="text-xl">Fill in the Form below to join!</h2>
+      </div>
+      <form action={dispatch} className="flex flex-col gap-2 ">
+        <Input
+          name="username"
+          required
+          type="text"
+          placeholder="Username"
+          errors={state?.fieldErrors.username}
+          minLength={3}
+          defaultValue={state?.payload.username.toString() ?? ""}
+        />
+        <Input
+          name="email"
+          required
+          type="email"
+          placeholder="Email"
+          errors={state?.fieldErrors.email}
+          defaultValue={state?.payload.email?.toString() ?? ""}
+        />
+        <Input
+          name="password"
+          required
+          type="password"
+          placeholder="Password"
+          errors={state?.fieldErrors.password}
+          minLength={PASSWORD_MIN_LENGTH}
+          defaultValue={state?.payload.password?.toString() ?? ""}
+        />
+        <Input
+          name="confirm_password"
+          required
+          type="Password"
+          placeholder="Confirm password"
+          errors={state?.fieldErrors.confirm_password}
+          minLength={PASSWORD_MIN_LENGTH}
+          defaultValue={state?.payload.confirm_password?.toString() ?? ""}
+        />
+        <button>완료</button>
+      </form>
+    </div>
+  );
+}
