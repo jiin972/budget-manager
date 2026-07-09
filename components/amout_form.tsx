@@ -1,6 +1,6 @@
 "use client";
 
-import { addExpense, getOllamaData } from "@/app/action";
+import { addExpense, getOllamaData } from "../app/(main)/home/action";
 import { useActionState, useEffect, useState } from "react";
 
 export default function AmountForm() {
