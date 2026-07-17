@@ -2,7 +2,10 @@
 
 import { PASSWORD_MIN_LENGTH } from "@/lib/constants";
 import db from "@/lib/db";
-import z, { flattenError } from "zod";
+import z from "zod";
+import bcrypt from "bcrypt";
+import getSession from "@/lib/session";
+import { redirect } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -58,7 +61,7 @@ const formSchema = z
     }
   });
 
-export async function CreateAccount(formData: FormData) {
+export async function createAccount(prevState: any, formData: FormData) {
   //formdata 파싱
   const data = {
     username: formData.get("username"),
@@ -74,5 +77,26 @@ export async function CreateAccount(formData: FormData) {
       flattenError: flatten.fieldErrors,
       payload: data,
     };
+  } else {
+    // zod검증 성공했을 경우 비밀번호 해싱(promise타입)
+    const hashedPassword = await bcrypt.hash(result.data.password, 12);
+    //save User on DB
+    const user = await db.user.create({
+      data: {
+        username: result.data.username,
+        email: result.data.email,
+        password: hashedPassword,
+      },
+      select: {
+        id: true, //세션(쿠키)구울 때, id만 반환 받음
+      },
+    });
+    const session = await getSession();
+    // add to data in Session from Prisma(data = id)
+    session.id = user.id; // 세션 객체에 user의 데이터 기록(쿠키 미전달)
+    await session.save(); // 호출 시, 브라우저에 쿠키 전달
+
+    console.log("리다이렉트 시도,");
+    redirect("/home");
   }
 }
