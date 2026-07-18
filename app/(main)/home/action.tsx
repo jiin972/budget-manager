@@ -1,8 +1,10 @@
 "use server";
 
-import { z } from "zod";
+import { success, z } from "zod";
 import db from "../../../lib/db";
 import { revalidatePath } from "next/cache";
+import getSession from "@/lib/session";
+import { notFound } from "next/navigation";
 
 //LLM API fetcher
 //인자를 추가로 받으려면 formData앞에 배치해야 함
@@ -55,6 +57,8 @@ export async function getOllamaData(prevState: any, formData: FormData) {
 
 // 입력값 검증담당
 export async function checkInputData(formData: FormData) {
+  const session = await getSession(); // session은 객체 → userId는 session.id로 꺼내야 함
+  const userId = session.id;
   const expenseSchema = z.object({
     amount: z.coerce.number().min(1),
     category: z.string().min(1, "사용처를 입력 해야 합니다.."),
@@ -62,6 +66,7 @@ export async function checkInputData(formData: FormData) {
     createdAt: z.coerce.date().min(1), //스트링타입을 date타입으로 변환환
   });
   const data = {
+    userId: userId,
     amount: formData.get("amount"),
     category: formData.get("category"),
     content: formData.get("content"),
@@ -74,6 +79,14 @@ export async function checkInputData(formData: FormData) {
 
 //db 생성
 export async function addExpense(prevState: any, formData: FormData) {
+  const session = await getSession(); // session은 객체 → userId는 session.id로 꺼내야 함
+  if (!session.id) {
+    return {
+      success: false,
+      errors: { userId: ["로그인이 필요합니다."] },
+    };
+  }
+  const userId = session.id;
   const result = await checkInputData(formData);
   if (!result.success) {
     const flatten = z.flattenError(result.error);
@@ -84,10 +97,10 @@ export async function addExpense(prevState: any, formData: FormData) {
 
   await db.expense.create({
     data: {
+      userId,
       amount,
       category,
       content,
-      createdAt,
     },
   });
   // DB변경  화면 새로 고침
