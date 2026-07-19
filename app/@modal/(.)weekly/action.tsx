@@ -1,34 +1,24 @@
 "use server";
 
+import { getWeekRange } from "@/lib/date";
 import db from "@/lib/db";
+import getSession from "@/lib/session";
 
 const ollamaURL = process.env.OLLAMA_API_URL;
 
 //주간 지출내역 AI fetch코드
 export async function getWeeklyAianalysis(prevState: any, formData: FormData) {
-  const today = new Date();
-
-  //이번 주 월요일 구하기
-  const day = today.getDay();
-  const diffToMonday = today.getDate() - day + (day === 0 ? -6 : 1);
-  const startOfWeek = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    diffToMonday,
-    0,
-    0,
-    0,
-    0,
-  );
-  //이번주 일요일 구하기
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6);
-  endOfWeek.setHours(23, 59, 59, 999);
-
+  const session = await getSession();
+  if (!session.id) {
+    return { success: false, errors: { userId: ["로그인이 필요합니다."] } };
+  }
+  const userId = session.id;
+  const { startOfWeek, endOfWeek } = getWeekRange();
   try {
     //DB조회
     const weeklyData = await db.expense.findMany({
       where: {
+        userId: userId,
         createdAt: {
           gte: startOfWeek,
           lte: endOfWeek,
@@ -70,33 +60,19 @@ export async function getWeeklyAianalysis(prevState: any, formData: FormData) {
 
 //주간 지출내역 가져오기
 export async function getWeekly() {
-  const today = new Date();
-
-  //이번 주 월요일 구하기(원본은 유지)
-  const day = today.getDay(); // 0(일)~6(토)
-  const diffToMonday = today.getDate() - day + (day === 0 ? -6 : 1);
-  // const startOfWeek = new Date(today.setDate(diffToMonday));
-  // startOfWeek.setHours(0, 0, 0, 0); //월요일 시작 시간 설정
-  const startOfWeek = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    diffToMonday,
-    0,
-    0,
-    0,
-    0,
-  );
-
-  //이번 주 일요일 구하기
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6);
-  endOfWeek.setHours(23, 59, 59, 999); //일요일 종료시간 설정
+  const session = await getSession();
+  if (!session.id) {
+    return { success: false, errors: { userId: ["로그인이 필요합니다."] } };
+  }
+  const userId = session.id;
+  const { startOfWeek, endOfWeek } = getWeekRange();
 
   try {
     // findMany는 조건에 맞는 데이터가 없으면 빈 배열([]),
     // 있으면 객체 배열([...])을 반환함
     const data = await db.expense.findMany({
       where: {
+        userId: userId,
         createdAt: {
           gte: startOfWeek,
           lte: endOfWeek,
