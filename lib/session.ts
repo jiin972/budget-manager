@@ -1,10 +1,12 @@
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
+import { NextRequest } from "next/server";
 
 interface SessionContent {
   id?: number;
 }
 
+//common cookie options
 const getCookieOptions = () => {
   return {
     cookieName: "smartest-payment",
@@ -17,7 +19,16 @@ const getCookieOptions = () => {
     },
   };
 };
-
+//iron session init
 export default async function getSession() {
   return getIronSession<SessionContent>(await cookies(), getCookieOptions());
+}
+
+//추가-Proxy(미들웨어) only - session 유무만 확인
+export async function getProxySession(request: NextRequest) {
+  return getIronSession<SessionContent>(
+    request as unknown as Request, //브라우저가 보낸 쿠키를 읽음, 타입 강제로 우회
+    new Response(), //session.save()안 쓰므로, 실제로는 사용안되는 빈 응답 객체
+    getCookieOptions(), //미들웨어에서도 배포환경에 맞게 scure옵션 켬
+  );
 }
