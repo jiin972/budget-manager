@@ -75,7 +75,11 @@ export async function createAccount(prevState: any, formData: FormData) {
     const flatten = z.flattenError(result.error);
     return {
       flattenError: flatten.fieldErrors,
-      payload: data,
+      //보안을 위해 payload에서 비밀번호제외
+      payload: {
+        username: data.username,
+        email: data.email,
+      },
     };
   } else {
     // zod검증 성공했을 경우 비밀번호 해싱(promise타입)
@@ -96,7 +100,6 @@ export async function createAccount(prevState: any, formData: FormData) {
     session.id = user.id; // 세션 객체에 user의 데이터 기록(쿠키 미전달)
     await session.save(); // 호출 시, 브라우저에 쿠키 전달
 
-    console.log("리다이렉트 시도,");
     redirect("/home");
   }
 }
