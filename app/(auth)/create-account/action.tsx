@@ -2,10 +2,10 @@
 
 import { PASSWORD_MIN_LENGTH } from "@/lib/constants";
 import db from "@/lib/db";
-import z from "zod";
-import bcrypt from "bcrypt";
 import getSession from "@/lib/session";
+import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
+import z from "zod";
 
 const formSchema = z
   .object({

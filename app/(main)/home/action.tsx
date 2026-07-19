@@ -1,10 +1,9 @@
 "use server";
 
-import { success, z } from "zod";
-import db from "../../../lib/db";
-import { revalidatePath } from "next/cache";
 import getSession from "@/lib/session";
-import { notFound } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+import db from "../../../lib/db";
 
 //LLM API fetcher
 //인자를 추가로 받으려면 formData앞에 배치해야 함
