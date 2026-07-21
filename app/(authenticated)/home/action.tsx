@@ -3,7 +3,8 @@
 import getSession from "@/lib/session";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import db from "../../../lib/db";
+import { redirect } from "next/navigation";
+import db from "@/lib/db";
 
 //LLM API fetcher
 //인자를 추가로 받으려면 formData앞에 배치해야 함
@@ -107,4 +108,11 @@ export async function addExpense(prevState: any, formData: FormData) {
   console.log("DB저장완료:", { amount, category, content, createdAt });
   revalidatePath("/");
   return { success: true };
+}
+
+//로그아웃 로직
+export async function logOut() {
+  const session = await getSession();
+  session.destroy();
+  redirect("/");
 }

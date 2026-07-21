@@ -1,6 +1,6 @@
 "use client";
 
-import { getWeeklyAianalysis } from "@/app/@modal/(.)weekly/action";
+import { getWeeklyAianalysis } from "@/app/(authenticated)/@modal/(.)weekly/action";
 import { useActionState } from "react";
 
 export default function WeekReport() {

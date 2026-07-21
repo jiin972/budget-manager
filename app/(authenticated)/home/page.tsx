@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 };
 export default function Main() {
   return (
-    <main className="min-h-screen p-5 flex flex-col items-center justify-center">
+    <main className="min-h-screen p-5 flex flex-col items-center justify-center relative">
       <div className="bg-card-dark p-5 rounded-2xl shadow-xl max-w-md w-full border border-slate-600/80">
         <h1 className="text-2xl font-semibold text-primary mb-2">
           Budget Manager

@@ -3,7 +3,7 @@ import "@/lib/db";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-between min-h-screen p-6 bg-linear-to-b from-slate-950 via-slate-900 to-slate-950">
+    <div className="flex flex-col items-center justify-between min-h-screen p-6 bg-app-gradient">
       <div className="my-auto flex flex-col items-center gap-5 text-center max-w-lg">
         <span className="text-xs font-semibold tracking-widest text-primary uppercase">
           AI 지출 분석
