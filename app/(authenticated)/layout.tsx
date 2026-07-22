@@ -10,7 +10,7 @@ export default function AuthenticatedLayout({
   return (
     <div>
       <header>
-        <div className="absolute top-2 right-2  bg-text-muted w-fit px-2 rounded-xl hover:bg-slate-500 transition-colors">
+        <div className="z-50 absolute top-2 right-2  bg-text-muted w-fit px-2 rounded-xl hover:bg-slate-500 transition-colors">
           <LogOutBtn />
         </div>
       </header>
